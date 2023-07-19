@@ -35,6 +35,25 @@ def create_containment(data):
     # Shorten 'First Name' if necessary
     data['First Name'] = data['First Name'].apply(shorten_first_name)
     return data
+#Stitching​
+#Add a random amount (1-5) of hyphens somewhere in the name (cannot be leading). If the full name has more than 11 characters, anywhere from 1-5 hyphens are added. If the name <= 11 chars, either 1 or 2 hyphens are added​
+
+#Return the Full Name
+def add_hypens(name):
+    num_chars = len(name)
+    if num_chars > 11:
+        num_hyphens = random.randint(1, 5)
+    else:
+        num_hyphens = random.randint(1, 2)
+    hyphen_indices = random.sample(range(1, num_chars), num_hyphens)
+    hyphen_indices.sort()
+    for index in hyphen_indices:
+        name = name[:index] + '-' + name[index:]
+    return name
+
+def create_stichting(data):
+    data['Full Name'] = data['Full Name'].apply(add_hypens)
+    return data
 
 def master(file):
     numSamples = 300
@@ -49,5 +68,10 @@ def master(file):
     samples = get_random_samples(file, numSamples)
     containment = create_containment(samples)
     containment.to_csv('containment.csv', index = False)
+    #stitching
+    #new round of samples
+    samples = get_random_samples(file, numSamples)
+    stitching = create_stichting(samples)
+    stitching.to_csv('stitching.csv', index = False)
 
 master(file)
